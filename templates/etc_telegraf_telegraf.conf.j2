@@ -19,7 +19,7 @@
 
 {% if influxdb_urls|default(false) %}
 [[outputs.influxdb]]
-  urls = {{ influxdb_urls }}
+  urls = {{ influxdb_urls | to_yaml }}
 {% if influxdb_database|default(false) %}
   database = "{{ influxdb_database}}"
 {% endif %}
