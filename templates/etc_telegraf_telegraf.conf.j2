@@ -1,0 +1,78 @@
+{% if telegraf_global_tags|default(false) %}
+[global_tags]
+{% for entry, content in telegraf_global_tags.items() %}
+  {{ entry }} = "{{ content }}"
+{% endfor %}
+{% endif %}
+
+[agent]
+  interval = "10s"
+  round_interval = true
+  metric_batch_size = 1000
+  metric_buffer_limit = 10000
+  collection_jitter = "0s"
+  flush_interval = "10s"
+  flush_jitter = "0s"
+  precision = ""
+  hostname = "{{ telegraf_agent_hostname }}"
+  omit_hostname = false
+
+{% if influxdb_urls|default(false) %}
+[[outputs.influxdb]]
+  urls = {{ influxdb_urls }}
+{% if influxdb_database|default(false) %}
+  database = "{{ influxdb_database}}"
+{% endif %}
+{% if influxdb_username|default(false) %}
+  username = "telegraf"
+{% endif %}
+{% if influxdb_password|default(false) %}
+  password = "{{ influxdb_password }}"
+{% endif %}
+{% if influxdb_retention|default(false) %}
+  retention_policy = "{{ influxdb_retention }}"
+{% endif %}
+{% endif %}
+
+[[inputs.cpu]]
+  percpu = true
+  totalcpu = true
+  collect_cpu_time = false
+  report_active = false
+
+[[inputs.disk]]
+  ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]
+
+[[inputs.diskio]]
+
+[[inputs.kernel]]
+
+[[inputs.mem]]
+
+[[inputs.processes]]
+
+[[inputs.swap]]
+
+[[inputs.system]]
+
+[[inputs.iptables]]
+
+[[inputs.net]]
+
+[[inputs.netstat]]
+
+[[inputs.temp]]
+
+{# glob won't match socket, but will match the pidfile #}
+{% if lookup('fileglob', '/var/run/docker.*')|length %}
+[[inputs.docker]]
+   endpoint = "unix:///var/run/docker.sock"
+   source_tag = true
+   perdevice = true
+
+#[[inputs.docker_log]]
+#   endpoint = "unix:///var/run/docker.sock"
+#   from_beginning = false
+#   timeout = "10s"
+#   source_tag = true
+{% endif %}

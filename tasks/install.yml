@@ -1,0 +1,31 @@
+---
+- name: Ansible python dependencies
+  pip:
+    name: netaddr
+    state: present
+
+- name: Check for telegraf
+  stat:
+    path: /usr/bin/telegraf
+  register: telegraf_binary
+
+- name: Check telegraf version
+  shell: /usr/bin/telegraf version | awk '{print $2}' | tr -d 'A-z'
+  when: telegraf_binary.stat.exists
+  register: telegraf_version_detected
+  changed_when: false
+
+- name: Install telegraf package
+  when: ((not telegraf_binary.stat.exists) or (telegraf_version_detected.stdout is defined and telegraf_version_detected.stdout is version(telegraf_version, '<')))
+  apt:
+    deb: "https://dl.influxdata.com/telegraf/releases/telegraf_{{ telegraf_version }}-1_{{ ansible_local.deb_architecture }}.deb"
+    state: present
+    update_cache: yes
+    cache_valid_time: 86400
+
+- name: Set CAP_NET_ADMIN+epi on /usr/bin/telegraf
+  capabilities:
+    path: /usr/bin/telegraf
+    capability: cap_net_admin+epi
+    state: present
+

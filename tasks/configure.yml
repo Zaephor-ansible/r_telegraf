@@ -1,0 +1,27 @@
+---
+- name: Install config files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+    force: "{{ item.force }}"
+  with_items:
+    - { src: 'etc_telegraf_telegraf.conf.j2', dest: '/etc/telegraf/telegraf.conf', owner: 'root', group: 'root', mode: '0644', force: 'yes' }
+  register: telegraf_configfiles
+
+- getent:
+    database: group
+    split: ':'
+
+- name: Add additional group to user
+  register: telegraf_usergroups
+  user:
+    name: "telegraf"
+    groups: "{{item}}"
+    append: yes
+  when: item in ansible_facts.getent_group
+  with_items:
+  - docker
+

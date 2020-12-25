@@ -1,0 +1,17 @@
+---
+- name: Set systemd service
+  when: "ansible_service_mgr == 'systemd'"
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    name: telegraf
+    state: "{{ 'restarted' if (telegraf_configfiles.changed or telegraf_usergroups.changed or (telegraf_version_detected.stdout is version(telegraf_version, '<'))) else 'started' }}"
+    masked: no
+
+- name: Set upstart service(legacy)
+  when: "ansible_service_mgr == 'upstart'"
+  service:
+    enabled: yes
+    name: telegraf
+    state: "{{ 'restarted' if (telegraf_configfiles.changed or telegraf_usergroups.changed or (telegraf_version_detected.stdout is version(telegraf_version, '<'))) else 'started' }}"
+
