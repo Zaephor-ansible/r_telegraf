@@ -1,6 +1,6 @@
 ---
 # defaults file for r_telegraf
-telegraf_version: 1.17.0
+telegraf_version: 1.17.1
 
 telegraf_inputs_default:
 - diskio
