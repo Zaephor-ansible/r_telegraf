@@ -1,5 +1,6 @@
 ---
 - name: Install config files
+  become: yes
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -14,8 +15,10 @@
 - getent:
     database: group
     split: ':'
+  become: yes
 
 - name: Add additional group to user
+  become: yes
   register: telegraf_usergroups
   user:
     name: "telegraf"

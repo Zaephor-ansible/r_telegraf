@@ -1,5 +1,6 @@
 ---
 - name: Ansible python dependencies
+  become: yes
   pip:
     name: netaddr
     state: present
@@ -16,6 +17,7 @@
   changed_when: false
 
 - name: Install telegraf package
+  become: yes
   when: ((not telegraf_binary.stat.exists) or (telegraf_version_detected.stdout is defined and telegraf_version_detected.stdout is version(telegraf_version, '<')))
   apt:
     deb: "https://dl.influxdata.com/telegraf/releases/telegraf_{{ telegraf_version }}-1_{{ ansible_local.deb_architecture }}.deb"
@@ -24,6 +26,7 @@
     cache_valid_time: 86400
 
 - name: Set CAP_NET_ADMIN+epi on /usr/bin/telegraf
+  become: yes
   capabilities:
     path: /usr/bin/telegraf
     capability: cap_net_admin+epi
