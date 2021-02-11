@@ -4,7 +4,7 @@
   register: stat_nvidia
 
 - name: Build inputs bundle
-  when: "{{ item.when|default(true) }}"
+  when: "item.when|default(true)"
   set_fact:
     telegraf_inputs_cfg: "{{ telegraf_inputs_cfg | default({}) | combine ({ item.input : (item.config|default([])) }) }}"
   loop:
