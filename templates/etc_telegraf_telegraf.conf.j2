@@ -43,9 +43,21 @@
 [[inputs.disk]]
   ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]
 
+# OLD
 {% for entry in telegraf_inputs_default %}
-[[inputs.{{ entry }}]]
+# [[inputs.{{ entry }}]]
 {% endfor %}
+
+# NEW
+{%- for input, data in telegraf_inputs_cfg.items() -%}
+[[inputs.{{input}}]]
+#
+{%- if data | length -%}
+{%- for entry in data %}
+  {{entry}}
+{% endfor %}
+{% endif %}
+{% endfor -%}
 
 {# glob won't match socket, but will match the pidfile #}
 {% if lookup('fileglob', '/var/run/docker.*')|length %}

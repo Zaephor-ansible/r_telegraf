@@ -1,4 +1,26 @@
 ---
+- stat:
+    path: /usr/bin/nvidia-smi
+  register: stat_nvidia
+
+- name: Build inputs bundle
+  when: "{{ item.when|default(true) }}"
+  set_fact:
+    telegraf_inputs_cfg: "{{ telegraf_inputs_cfg | default({}) | combine ({ item.input : (item.config|default([])) }) }}"
+  loop:
+  - { 'input': 'diskio', 'config': []  }
+  - { 'input': 'kernel', 'config': []  }
+  - { 'input': 'mem', 'config': []  }
+  - { 'input': 'processes', 'config': []  }
+  - { 'input': 'swap', 'config': []  }
+  - { 'input': 'system', 'config': []  }
+  - { 'input': 'iptables', 'config': []  }
+  - { 'input': 'net', 'config': []  }
+  - { 'input': 'netstat', 'config': []  }
+  - { 'input': 'temp', 'config': []  }
+  - { 'input': 'nvidia_smi', 'config': [] , 'when': stat_nvidia.stat.exists }
+
+
 - name: Install config files
   become: yes
   template:
@@ -28,3 +50,6 @@
   with_items:
   - docker
 
+- name: "Empty variable"
+  set_fact:
+    telegraf_inputs_cfg: {}
