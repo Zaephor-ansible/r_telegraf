@@ -51,13 +51,12 @@
 # NEW
 {% for input, data in telegraf_inputs_cfg.items() %}
 [[inputs.{{input}}]]
-
-{%- if data | length -%}
+{% if data | length %}
 {% for entry in data %}
   {{entry}}
 {% endfor %}
 {% endif %}
-{% endfor -%}
+{% endfor %}
 
 {# glob won't match socket, but will match the pidfile #}
 {% if lookup('fileglob', '/var/run/docker.*')|length %}
