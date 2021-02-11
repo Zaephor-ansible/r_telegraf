@@ -49,11 +49,11 @@
 {% endfor %}
 
 # NEW
-{% for input, data in telegraf_inputs_cfg.items() -%}
+{% for input, data in telegraf_inputs_cfg.items() %}
 [[inputs.{{input}}]]
 
 {%- if data | length -%}
-{%- for entry in data %}
+{% for entry in data %}
   {{entry}}
 {% endfor %}
 {% endif %}
