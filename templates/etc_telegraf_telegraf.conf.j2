@@ -34,21 +34,6 @@
 {% endif %}
 {% endif %}
 
-[[inputs.cpu]]
-  percpu = true
-  totalcpu = true
-  collect_cpu_time = false
-  report_active = false
-
-[[inputs.disk]]
-  ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]
-
-# OLD
-{% for entry in telegraf_inputs_default %}
-# [[inputs.{{ entry }}]]
-{% endfor %}
-
-# NEW
 {% for input, data in telegraf_inputs_cfg.items() %}
 [[inputs.{{input}}]]
 {% if data | length %}
@@ -57,17 +42,3 @@
 {% endfor %}
 {% endif %}
 {% endfor %}
-
-{# glob won't match socket, but will match the pidfile #}
-{% if lookup('fileglob', '/var/run/docker.*')|length %}
-[[inputs.docker]]
-   endpoint = "unix:///var/run/docker.sock"
-   source_tag = true
-   perdevice = true
-
-#[[inputs.docker_log]]
-#   endpoint = "unix:///var/run/docker.sock"
-#   from_beginning = false
-#   timeout = "10s"
-#   source_tag = true
-{% endif %}
