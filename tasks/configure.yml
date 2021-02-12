@@ -15,13 +15,13 @@
   - { 'input': 'cpu', 'config': ['percpu = true', 'totalcpu = true', 'collect_cpu_time = false', 'report_active = false']  }
   - { 'input': 'disk', 'config': ['ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]']  }
   - { 'input': 'diskio', 'config': []  }
-  - { 'input': 'docker', 'config': ['endpoint = "unix:///var/run/docker.sock"', 'source_tag = true', 'perdevice = true'] , 'when': stat_docker.stat.exists }
+  - { 'input': 'docker', 'config': ['endpoint = "unix:///var/run/docker.sock"', 'source_tag = true', 'perdevice = true'] , 'when': '{{ stat_docker.stat.exists}}' }
   - { 'input': 'iptables', 'config': []  }
   - { 'input': 'kernel', 'config': []  }
   - { 'input': 'mem', 'config': []  }
   - { 'input': 'net', 'config': []  }
   - { 'input': 'netstat', 'config': []  }
-  - { 'input': 'nvidia_smi', 'config': [] , 'when': stat_nvidia.stat.exists }
+  - { 'input': 'nvidia_smi', 'config': [] , 'when': '{{stat_nvidia.stat.exists}}' }
   - { 'input': 'processes', 'config': []  }
   - { 'input': 'swap', 'config': []  }
   - { 'input': 'system', 'config': []  }
