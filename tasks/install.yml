@@ -27,6 +27,8 @@
 
 - name: Set CAP_NET_ADMIN+epi on /usr/bin/telegraf
   become: yes
+  # TODO: Temporary workaround for f2fs rpi's... should detect root filesystem instead
+  when: "ansible_lsb.id != 'Raspbian'"
   capabilities:
     path: /usr/bin/telegraf
     capability: cap_net_admin+epi
